@@ -4,9 +4,6 @@ const connectionString = 'postgresql://postgres.amkocqxmizilimqjegdp:eVVlVePWcPH
 
 const pool = new Pool({
     connectionString: connectionString,
-    ssl: {
-        rejectUnauthorized: false
-    }
 });
 
 module.exports = {

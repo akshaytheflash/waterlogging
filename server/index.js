@@ -319,12 +319,6 @@ app.get('/api/rainfall-warnings', (req, res) => {
     res.json(warnings);
 });
 
-// Export for Vercel
-module.exports = app;
-
-// Only listen if running locally
-if (require.main === module) {
-    app.listen(PORT, () => {
-        console.log(`Server running on http://localhost:${PORT}`);
-    });
-}
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
