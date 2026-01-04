@@ -3,99 +3,221 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Citizen Guidance - Delhi Waterlogging</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Guidelines - Delhi Waterlogging Monitoring</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Lucide Icons for simple line icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Specific page tweaks */
+        body {
+            background: white;
+        }
+
+        .map-silhouette {
+            opacity: 0.2;
+            width: 300px;
+            filter: invert(1);
+        }
+    </style>
 </head>
 
 <body>
     <header>
-        <div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Emblem_of_India.svg/200px-Emblem_of_India.svg.png"
-                alt="Emblem of India">
-            <div>
-                <h1>Government of NCT of Delhi</h1>
-                <p style="margin:0; font-size: 0.8rem;">Official Safety Portal</p>
-            </div>
+        <div class="logo" onclick="location.href='index.html'">
+            <img src="logo.png" alt="URRS Logo">
+            <h1>Urban Rain Resilience System (URRS)</h1>
         </div>
         <nav>
-            <ul>
+            <ul id="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="warning.html">Warnings</a></li>
+                <li><a href="live-map.html">Live Map</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="guidance.html">Safety Guidelines</a></li>
+                <li><a href="warning.html">Rainfall Warnings</a></li>
+                <li id="auth-link"><a href="login.html">Login / Register</a></li>
             </ul>
         </nav>
     </header>
 
-    <div class="container">
-        <h1>Citizen Safety & Prevention Guidance</h1>
+    <!-- Hero Section -->
+    <section class="safety-hero">
+        <div class="safety-hero-content">
+            <h2>SAFETY GUIDELINES</h2>
+            <p>For Delhi Monsoon & Water-Logging</p>
+            <div class="tagline">Stay informed. Stay alert. Stay safe.</div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <i data-lucide="cloud-rain"
+                style="width: 80px; height: 80px; color: var(--blue-100); margin-bottom: 1rem; opacity: 0.8;"></i>
+            <!-- Placeholder for map silhouette - using an icon for now -->
+            <i data-lucide="map" style="width: 120px; height: 120px; color: white; opacity: 0.2;"></i>
+        </div>
+    </section>
 
-        <div class="card">
-            <h3>1. Before Heavy Rainfall (Prevention)</h3>
-            <ul>
-                <li>Clean local drains around your property to ensure free flow of rainwater.</li>
-                <li>Secure electrical wiring and ensure meters are at a safe height.</li>
-                <li>Stock up on essential supplies (medicine, dry food, clean water) if living in known low-lying areas.
-                </li>
-                <li>Ensure your vehicle is parked on higher ground.</li>
-            </ul>
+    <div class="container" style="display: grid; grid-template-columns: 1fr 350px; gap: 3rem; align-items: start;">
+
+        <!-- Main Content -->
+        <div>
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="openTab(event, 'citizens')">WALKERS</button>
+                <button class="tab-btn" onclick="openTab(event, 'drivers')">DRIVERS</button>
+                <button class="tab-btn" onclick="openTab(event, 'residents')">RESIDENTS</button>
+                <button class="tab-btn" onclick="openTab(event, 'workers')">FIELD WORKERS</button>
+            </div>
+
+            <!-- Citizens Tab -->
+            <div id="citizens" class="tab-content active">
+                <div class="guideline-card">
+                    <div class="guideline-icon"><i data-lucide="shield-alert"></i></div>
+                    <div class="guideline-text">Avoid flooded streets & underpasses</div>
+                </div>
+                <div class="guideline-card">
+                    <div class="guideline-icon"><i data-lucide="eye"></i></div>
+                    <div class="guideline-text">Beware of open drains & uncovered manholes</div>
+                </div>
+                <div class="guideline-card">
+                    <div class="guideline-icon"><i data-lucide="zap-off"></i></div>
+                    <div class="guideline-text">Do not touch electric poles or loose wires</div>
+                </div>
+                <div class="guideline-card">
+                    <div class="guideline-icon"><i data-lucide="waves"></i></div>
+                    <div class="guideline-text">Avoid walking in flowing water</div>
+                </div>
+            </div>
+
+            <!-- Drivers Tab -->
+            <div id="drivers" class="tab-content">
+                <div class="guideline-card">
+                    <div class="guideline-icon"><i data-lucide="map-pin-off"></i></div>
+                    <div class="guideline-text">Avoid water-logged underpasses (marked on map)</div>
+                </div>
+                <div class="guideline-card">
+                    <div class="guideline-icon"><i data-lucide="car"></i></div>
+                    <div class="guideline-text">Do not drive if water crosses wheel level</div>
+                </div>
+                <div class="guideline-card">
+                    <div class="guideline-icon"><i data-lucide="info"></i></div>
+                    <div class="guideline-text">Follow traffic advisories & diversions</div>
+                </div>
+                <div class="guideline-card">
+                    <div class="guideline-icon"><i data-lucide="power-off"></i></div>
+                    <div class="guideline-text">Switch off engine if car stalls in water</div>
+                </div>
+            </div>
+
+            <!-- Residents Tab -->
+            <div id="residents" class="tab-content">
+                <div class="guideline-card">
+                    <div class="guideline-icon"><i data-lucide="trash-2"></i></div>
+                    <div class="guideline-text">Keep nearby drains free of waste</div>
+                </div>
+                <div class="guideline-card">
+                    <div class="guideline-icon"><i data-lucide="lock"></i></div>
+                    <div class="guideline-text">Secure electrical appliances</div>
+                </div>
+                <div class="guideline-card">
+                    <div class="guideline-icon"><i data-lucide="phone"></i></div>
+                    <div class="guideline-text">Store emergency numbers</div>
+                </div>
+                <div class="guideline-card">
+                    <div class="guideline-icon"><i data-lucide="terminal"></i></div>
+                    <div class="guideline-text">Report persistent water-logging via MCD/DJB</div>
+                </div>
+                <div style="margin-top: 2rem;">
+                    <a href="index.html" class="btn btn-primary">Report New Issue</a>
+                </div>
+            </div>
+
+            <!-- Field Workers Tab -->
+            <div id="workers" class="tab-content field-worker-tab">
+                <div class="guideline-card" style="background: var(--gray-50);">
+                    <div class="guideline-icon" style="color: var(--gray-600);"><i data-lucide="hard-hat"></i></div>
+                    <div class="guideline-text">Mandatory PPE (gumboots, gloves, reflective jackets)</div>
+                </div>
+                <div class="guideline-card" style="background: var(--gray-50);">
+                    <div class="guideline-icon" style="color: var(--gray-600);"><i data-lucide="cloud-lightning"></i>
+                    </div>
+                    <div class="guideline-text">Avoid drain work during peak rainfall</div>
+                </div>
+                <div class="guideline-card" style="background: var(--gray-50);">
+                    <div class="guideline-icon" style="color: var(--gray-600);"><i data-lucide="zap-off"></i></div>
+                    <div class="guideline-text">Switch off power before operations</div>
+                </div>
+                <div class="guideline-card" style="background: var(--gray-50);">
+                    <div class="guideline-icon" style="color: var(--gray-600);"><i data-lucide="file-text"></i></div>
+                    <div class="guideline-text">Follow departmental SOPs</div>
+                </div>
+            </div>
         </div>
 
-        <div class="card">
-            <h3>2. During Waterlogging / Flooding</h3>
-            <ul>
-                <li><strong>Safety first:</strong> Avoid walking or driving through flooded waters. Just 6 inches of
-                    moving water can knock you down.</li>
-                <li><strong>Electrical Safety:</strong> Do not touch electrical poles, wires, or appliances if you are
-                    standing in water.</li>
-                <li><strong>Traffic:</strong> Avoid underpasses (like Minto Bridge) during heavy rain; they are
-                    high-risk zones.</li>
-                <li>Stay tuned to official weather updates and radio broadcasts.</li>
-            </ul>
-        </div>
+        <!-- Sticky Emergency Card -->
+        <aside>
+            <div class="emergency-sticky">
+                <h4><i data-lucide="alert-triangle"></i> Emergency Contacts – Delhi</h4>
+                <table class="emergency-table">
+                    <tr>
+                        <td><strong>Emergency (All)</strong></td>
+                        <td style="text-align: right;"><a href="tel:112" class="call-btn">112</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ambulance</strong></td>
+                        <td style="text-align: right;"><a href="tel:102" class="call-btn">102</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Delhi Police</strong></td>
+                        <td style="text-align: right;"><a href="tel:112" class="call-btn">112</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fire Services</strong></td>
+                        <td style="text-align: right;"><a href="tel:101" class="call-btn">101</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>DDMA Control</strong></td>
+                        <td style="text-align: right;"><a href="tel:1077" class="call-btn">1077</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Delhi Jal Board</strong></td>
+                        <td style="text-align: right;"><a href="tel:1916" class="call-btn">1916</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>MCD Control</strong></td>
+                        <td style="text-align: right;"><a href="tel:155305" class="call-btn">155305</a></td>
+                    </tr>
+                </table>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 1rem; text-align: center;">Numbers
+                    are tap-to-call on mobile devices.</p>
+            </div>
+        </aside>
 
-        <div class="card">
-            <h3>3. After Water Recedes (Health & Safety)</h3>
-            <ul>
-                <li>Check for structural damage to your property before entering.</li>
-                <li>Boil water for drinking to prevent water-borne diseases like Cholera and Typhoid.</li>
-                <li>Dispose of any food that came into contact with floodwater.</li>
-                <li>Report any stagnant water to the MCD for anti-larval treatment.</li>
-            </ul>
-        </div>
-
-        <div class="card" style="background: #fff3cd; border-color: #ffeeba;">
-            <h3>Emergency Contacts</h3>
-            <table style="width: 100%;">
-                <tr>
-                    <td><strong>Police:</strong></td>
-                    <td>100 or 112</td>
-                </tr>
-                <tr>
-                    <td><strong>Delhi Fire Service:</strong></td>
-                    <td>101</td>
-                </tr>
-                <tr>
-                    <td><strong>Ambulance:</strong></td>
-                    <td>102</td>
-                </tr>
-                <tr>
-                    <td><strong>CAT Ambulance:</strong></td>
-                    <td>1099</td>
-                </tr>
-                <tr>
-                    <td><strong>MCD Central Control Room:</strong></td>
-                    <td>1266 / 155305</td>
-                </tr>
-                <tr>
-                    <td><strong>PWD Control Room:</strong></td>
-                    <td>1800-11-0032</td>
-                </tr>
-            </table>
-        </div>
     </div>
 
     <footer>
-        <p>&copy; 2024 Government of NCT of Delhi.</p>
+        <p>&copy; 2024 Government of NCT of Delhi. All Rights Reserved.</p>
     </footer>
+
+    <script>
+        // Tab system
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.className += " active";
+        }
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+    <script src="navbar.js"></script>
 </body>
 
 </html>

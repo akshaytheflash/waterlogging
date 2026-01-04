@@ -9,17 +9,18 @@
 
 <body>
     <header>
-        <div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Emblem_of_India.svg/200px-Emblem_of_India.svg.png"
-                alt="Emblem of India">
-            <div>
-                <h1>Government of NCT of Delhi</h1>
-                <p style="margin:0; font-size: 0.8rem;">Waterlogging Monitoring & Response System</p>
-            </div>
+        <div class="logo" onclick="location.href='index.html'">
+            <img src="logo.png" alt="URRS Logo">
+            <h1>Urban Rain Resilience System (URRS)</h1>
         </div>
         <nav>
-            <ul>
+            <ul id="nav-links">
                 <li><a href="index.html">Home</a></li>
+                <li><a href="live-map.html">Live Map</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="guidance.html">Safety Guidelines</a></li>
+                <li><a href="warning.html">Rainfall Warnings</a></li>
+                <li id="auth-link"><a href="login.html">Login / Register</a></li>
             </ul>
         </nav>
     </header>
@@ -55,6 +56,7 @@
         </div>
     </div>
 
+    <script src="navbar.js"></script>
     <script>
         document.getElementById('register-form').onsubmit = async (e) => {
             e.preventDefault();
@@ -71,10 +73,10 @@
 
             const data = await res.json();
             if (res.ok) {
-                alert("Registration successful. Please login.");
-                window.location.href = 'login.html';
+                showToast("Registration successful. Please login.", "success");
+                setTimeout(() => window.location.href = 'login.html', 1500);
             } else {
-                alert(data.error);
+                showToast(data.error, "error");
             }
         };
     </script>

@@ -12,102 +12,126 @@
 
 <body>
     <header>
-        <div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Emblem_of_India.svg/200px-Emblem_of_India.svg.png"
-                alt="Emblem of India">
-            <div>
-                <h1>Government of NCT of Delhi</h1>
-                <p style="margin:0; font-size: 0.8rem;">Waterlogging Monitoring & Response System</p>
-            </div>
+        <div class="logo" onclick="location.href='index.html'">
+            <img src="logo.png" alt="URRS Logo">
+            <h1>Urban Rain Resilience System (URRS)</h1>
         </div>
         <nav>
             <ul id="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="reports.html">View Reports</a></li>
-                <li><a href="guidance.html">Citizen Guidance</a></li>
+                <li><a href="live-map.html">Live Map</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="guidance.html">Safety Guidelines</a></li>
                 <li><a href="warning.html">Rainfall Warnings</a></li>
                 <li id="auth-link"><a href="login.html">Login / Register</a></li>
             </ul>
         </nav>
     </header>
 
+
     <div class="container">
-        <h2>Public Reporting Dashboard</h2>
-        <p>Browse reports submitted by citizens and contribute by upvoting or commenting.</p>
+        <div style="text-align: center; margin-bottom: var(--spacing-xl);">
+            <h1 style="color: var(--primary-blue); font-size: 2.5rem; margin-bottom: 0.5rem;">Incident Reports</h1>
+            <p style="font-size: 1.1rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto;">Track live
+                waterlogging reports across Delhi or manage your own submissions.</p>
+        </div>
+
+        <div class="dashboard-tabs">
+            <button class="tab-btn active" id="tab-city" onclick="switchTab('city')">City Wide Reports</button>
+            <button class="tab-btn" id="tab-my" onclick="switchTab('my')" style="display: none;">My Submissions</button>
+        </div>
 
         <div class="grid-2">
             <!-- List Scrollable -->
-            <div id="reports-list-container" class="card" style="max-height: 800px; overflow-y: auto;">
-                <h3>Active Reports</h3>
-                <div id="public-reports-list">
+            <div id="reports-list-container" class="card"
+                style="max-height: 800px; display: flex; flex-direction: column;">
+                <div style="margin-bottom: var(--spacing-md);">
+                    <h3 style="margin-bottom: var(--spacing-md);">Active Reports</h3>
+                    <div class="filter-controls" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" id="report-search" placeholder="Search by title/desc..."
+                            style="flex: 2; padding: 8px; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                        <select id="filter-severity"
+                            style="flex: 1; padding: 8px; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                            <option value="">All Severities</option>
+                            <option value="Critical">Critical</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                        <select id="filter-status"
+                            style="flex: 1; padding: 8px; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                            <option value="">All Status</option>
+                            <option value="Open">Open</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Resolved">Resolved</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="public-reports-list" style="overflow-y: auto; flex: 1;">
                     Loading reports...
                 </div>
             </div>
 
             <!-- Detail View -->
             <div id="side-panel">
-                <div class="card" id="detail-placeholder">
-                    <p style="text-align: center; color: #666;">Select a report from the list to view details, map
-                        location, and join the discussion.</p>
+                <div class="card" id="detail-placeholder" style="text-align: center; padding: var(--spacing-2xl);">
+                    <div style="font-size: 4rem; margin-bottom: var(--spacing-lg);">📍</div>
+                    <p style="text-align: center; color: var(--text-secondary); font-size: 1.1rem;">Select a report from
+                        the list to view details, map location, and join the discussion.</p>
                 </div>
 
                 <div class="card" id="active-report-details" style="display: none;">
                     <h3 id="detail-title">Report Details</h3>
-                    <div id="detail-map" style="height: 200px; margin-bottom: 10px; border: 1px solid #ddd;"></div>
+                    <div id="detail-map"
+                        style="height: 250px; margin-bottom: var(--spacing-lg); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md);">
+                    </div>
                     <p id="detail-desc"></p>
                     <div class="grid-2" style="font-size: 0.9rem; gap: 10px;">
                         <p><strong>Severity:</strong> <span id="detail-severity"></span></p>
                         <p><strong>Status:</strong> <span id="detail-status"></span></p>
                     </div>
                     <p><strong>Authority Assigned:</strong> <span id="detail-authority"></span></p>
+                    <p><strong>Location:</strong> <span id="detail-location">Fetching...</span></p>
 
                     <div id="detail-image-container"></div>
 
-                    <hr>
+                    <div
+                        style="margin: var(--spacing-xl) 0; height: 1px; background: var(--border-color); width: 100%;">
+                    </div>
+
                     <div id="upvote-section"
-                        style="display: flex; align-items: center; justify-content: space-between;">
-                        <button id="upvote-btn" class="btn btn-primary" style="flex: 1; margin-right: 10px;">
+                        style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-xl);">
+                        <button id="upvote-btn" class="btn btn-primary" style="flex: 1; padding: 0.75rem;">
                             👍 Trust/Upvote (<span id="upvote-count">0</span>)
                         </button>
                     </div>
 
-                    <h4>Community Comments</h4>
+                    <h4
+                        style="font-size: 1.25rem; margin-bottom: var(--spacing-md); color: var(--text-primary); border-bottom: 2px solid var(--primary-blue); display: inline-block; padding-bottom: 4px;">
+                        Community Comments</h4>
+
                     <div id="comments-list"
-                        style="margin-bottom: 15px; max-height: 250px; overflow-y: auto; padding: 10px; background: #fdfdfd; border: 1px solid #eee;">
+                        style="margin-bottom: var(--spacing-lg); max-height: 300px; overflow-y: auto; padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
                     </div>
 
                     <div id="comment-form-container">
-                        <textarea id="new-comment" placeholder="Add your observation..." rows="2"></textarea>
-                        <button onclick="submitComment()" class="btn btn-success"
-                            style="width: 100%; margin-top: 5px;">Post Comment</button>
+                        <textarea id="new-comment" placeholder="Add your observation..." rows="2"
+                            style="margin-bottom: 10px;"></textarea>
+                        <button onclick="submitComment()" class="btn btn-success" style="width: 100%;">Post
+                            Comment</button>
                     </div>
 
                     <div id="resolution-info"
-                        style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-left: 5px solid #2e7d32; display: none;">
-                        <h4>✅ Resolution Proof</h4>
+                        style="margin-top: var(--spacing-xl); padding: var(--spacing-lg); background: var(--blue-50); border: 1.5px solid var(--primary-blue); border-radius: var(--radius-md); display: none; box-shadow: var(--shadow-sm);">
+                        <h4 style="color: var(--primary-blue); margin-bottom: var(--spacing-md);">✅ Resolution Proof
+                        </h4>
                         <div id="resolution-proof-img"></div>
-                        <p id="resolution-note" style="font-style: italic;"></p>
+                        <p id="resolution-note"
+                            style="font-style: italic; color: var(--text-secondary); margin-top: var(--spacing-md);">
+                        </p>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Chatbot Toggle (Duplicated for consistency) -->
-    <button id="chatbot-toggle" class="btn btn-primary"
-        style="border-radius: 50%; width: 60px; height: 60px; font-size: 1.5rem;">💬</button>
-    <div id="chatbot-window">
-        <div id="chat-header">
-            <span>AI Help Desk</span>
-            <button onclick="toggleChat()"
-                style="background: none; border: none; color: white; cursor: pointer;">✖</button>
-        </div>
-        <div id="chat-messages">
-            <div class="message ai-message">Welcome to Delhi Waterlogging Help Desk. How can I assist you today?</div>
-        </div>
-        <div id="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Type your question...">
-            <button onclick="sendMessage()" class="btn btn-primary">Send</button>
         </div>
     </div>
 
@@ -115,17 +139,11 @@
         <p>&copy; 2024 Government of NCT of Delhi. All Rights Reserved.</p>
     </footer>
 
+    <script src="navbar.js"></script>
     <script src="reports.js"></script>
-    <script>
-        // Common UI scripts
-        let currentUser = JSON.parse(localStorage.getItem('user'));
-        if (currentUser) {
-            document.getElementById('auth-link').innerHTML = `<a href="#" onclick="localStorage.clear(); location.reload();">Logout (${currentUser.username})</a>`;
-            if (currentUser.role === 'authority') {
-                document.getElementById('nav-links').innerHTML += `<li><a href="authority.html">Dashboard</a></li>`;
-            }
-        }
-    </script>
+
 </body>
+
+</html>
 
 </html>

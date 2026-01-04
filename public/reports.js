@@ -3,43 +3,117 @@ let activeReportId = null;
 let detailMap = null;
 let currentUser = JSON.parse(localStorage.getItem('user'));
 let token = localStorage.getItem('token');
+let filteredReports = [];
+let activeTab = 'city'; // 'city' or 'my'
 
 document.addEventListener('DOMContentLoaded', () => {
     loadReports();
-    setupChatbot();
+    setupFilters();
+    checkMyTabVisibility();
+
+    // Check for URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if (tab === 'my' && currentUser && currentUser.role === 'citizen') {
+        switchTab('my');
+    }
 });
+
+function checkMyTabVisibility() {
+    if (currentUser && currentUser.role === 'citizen') {
+        const myTab = document.getElementById('tab-my');
+        if (myTab) myTab.style.display = 'block';
+    }
+}
 
 async function loadReports() {
     const res = await fetch('/api/reports');
     reports = await res.json();
+    filteredReports = [...reports];
+    renderReports(filteredReports);
+}
+
+function setupFilters() {
+    const searchInput = document.getElementById('report-search');
+    const severitySelect = document.getElementById('filter-severity');
+    const statusSelect = document.getElementById('filter-status');
+
+    if (searchInput) searchInput.addEventListener('input', filterReports);
+    if (severitySelect) severitySelect.addEventListener('change', filterReports);
+    if (statusSelect) statusSelect.addEventListener('change', filterReports);
+}
+
+function switchTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`tab-${tab}`).classList.add('active');
+
+    // Update list title
+    const listTitle = document.querySelector('#reports-list-container h3');
+    if (listTitle) {
+        listTitle.textContent = tab === 'city' ? 'Active reports (City Wide)' : 'My Past Submissions';
+    }
+
+    filterReports();
+}
+
+function filterReports() {
+    const search = document.getElementById('report-search').value.toLowerCase();
+    const severity = document.getElementById('filter-severity').value;
+    const status = document.getElementById('filter-status').value;
+
+    filteredReports = reports.filter(r => {
+        const matchesSearch = r.title.toLowerCase().includes(search) ||
+            r.description.toLowerCase().includes(search);
+        const matchesSeverity = !severity || r.severity === severity;
+        const matchesStatus = !status || r.status === status;
+
+        let matchesTab = true;
+        if (activeTab === 'my') {
+            matchesTab = (r.reporter_id === (currentUser ? currentUser.id : null));
+        }
+
+        return matchesSearch && matchesSeverity && matchesStatus && matchesTab;
+    });
+
+    renderReports(filteredReports);
+}
+
+window.switchTab = switchTab;
+
+function renderReports(items) {
     const list = document.getElementById('public-reports-list');
 
-    if (reports.length === 0) {
-        list.innerHTML = '<p>No reports found.</p>';
+    if (items.length === 0) {
+        list.innerHTML = '<p style="text-align:center; padding: var(--spacing-xl); color: var(--text-secondary);">No reports found matching your criteria.</p>';
         return;
     }
 
-    list.innerHTML = reports.map(r => `
-        <div class="card" style="cursor:pointer; border-left: 5px solid ${getSeverityColor(r.severity)};" onclick="showReportDetails(${r.id})">
-            <div style="display:flex; justify-content:space-between;">
-                <strong>${r.title}</strong>
-                <span style="font-size:0.8rem; background:#eee; padding:2px 5px; border-radius:3px;">${r.status}</span>
+    list.innerHTML = items.map(r => {
+        const color = getSeverityColor(r.severity);
+        const bgColor = color + '0a'; // 4% opacity for very subtle tint
+        return `
+            <div class="card" style="cursor:pointer; border: 1.5px solid ${color}; background-color: ${bgColor}; margin-bottom: 12px; transition: all 0.2s ease;" onclick="showReportDetails(${r.id})">
+                <div style="display:flex; justify-content:space-between; align-items: flex-start; margin-bottom: 8px;">
+                    <strong style="font-size: 1.1rem; color: var(--text-primary);">${r.title}</strong>
+                    <span style="font-size:0.75rem; background: rgba(255,255,255,0.8); padding:4px 8px; border-radius:var(--radius-sm); font-weight:700; border: 1px solid var(--border-color);">${r.status}</span>
+                </div>
+                <p style="font-size:0.9rem; color:var(--text-secondary); margin:0 0 12px 0; line-height: 1.5;">${r.description.substring(0, 80)}${r.description.length > 80 ? '...' : ''}</p>
+                <div style="font-size:0.8rem; display:flex; justify-content:space-between; color:var(--text-secondary); font-weight: 500;">
+                    <span>📍 ${r.authority_name}</span>
+                    <span>🕒 ${new Date(r.created_at).toLocaleDateString()}</span>
+                </div>
             </div>
-            <p style="font-size:0.85rem; color:#666; margin:5px 0;">${r.description.substring(0, 60)}...</p>
-            <div style="font-size:0.75rem; display:flex; justify-content:space-between; color:#888;">
-                <span>📍 ${r.authority_name}</span>
-                <span>🕒 ${new Date(r.created_at).toLocaleDateString()}</span>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 function getSeverityColor(sev) {
     switch (sev) {
-        case 'Critical': return '#d9534f';
-        case 'High': return '#f0ad4e';
-        case 'Medium': return '#5bc0de';
-        default: return '#5cb85c';
+        case 'Critical': return '#DC2626';
+        case 'High': return '#F97316';
+        case 'Medium': return '#F59E0B';
+        default: return '#10B981';
     }
 }
 
@@ -55,12 +129,29 @@ async function showReportDetails(id) {
     document.getElementById('detail-severity').textContent = r.severity;
     document.getElementById('detail-status').textContent = r.status;
     document.getElementById('detail-authority').textContent = r.authority_name;
+    document.getElementById('detail-location').textContent = 'Fetching location...';
 
     // Lazy init map
     if (detailMap) detailMap.remove();
     detailMap = L.map('detail-map').setView([r.lat, r.lng], 15);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(detailMap);
     L.marker([r.lat, r.lng]).addTo(detailMap);
+
+    // Fetch human-readable address
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${r.lat}&lon=${r.lng}&zoom=18`)
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.display_name) {
+                const parts = data.display_name.split(',');
+                const address = parts.slice(0, 3).join(',').trim();
+                document.getElementById('detail-location').textContent = address;
+            } else {
+                document.getElementById('detail-location').textContent = `${r.lat}, ${r.lng}`;
+            }
+        })
+        .catch(() => {
+            document.getElementById('detail-location').textContent = `${r.lat}, ${r.lng}`;
+        });
 
     const imgContainer = document.getElementById('detail-image-container');
     imgContainer.innerHTML = r.image_url ? `<img src="${r.image_url}" style="width:100%; border-radius:4px; margin-top:10px;">` : '';
@@ -87,7 +178,7 @@ async function loadUpvotes(reportId) {
 }
 
 document.getElementById('upvote-btn').onclick = async () => {
-    if (!token) return alert("Please login to upvote");
+    if (!token) return showToast("Please login to upvote", "warning", 8000);
     await fetch(`/api/reports/${activeReportId}/upvote`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
@@ -112,8 +203,8 @@ async function loadComments(reportId) {
 
 async function submitComment() {
     const text = document.getElementById('new-comment').value;
-    if (!token) return alert("Please login to participate in the discussion.");
-    if (!text) return alert("Type a comment first!");
+    if (!token) return showToast("Please login to participate in the discussion.", "warning", 8000);
+    if (!text) return showToast("Type a comment first!", "error");
 
     const res = await fetch(`/api/reports/${activeReportId}/comments`, {
         method: 'POST',
@@ -130,36 +221,3 @@ async function submitComment() {
     }
 }
 
-// Global Chatbot toggle/logic (simplified copy)
-function toggleChat() {
-    const win = document.getElementById('chatbot-window');
-    win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
-}
-document.getElementById('chatbot-toggle').onclick = toggleChat;
-
-async function sendMessage() {
-    const input = document.getElementById('chat-input');
-    const msg = input.value;
-    if (!msg) return;
-    const messagesDiv = document.getElementById('chat-messages');
-    messagesDiv.innerHTML += `<div class="message user-message">${msg}</div>`;
-    input.value = '';
-    const res = await fetch('/api/ai/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg, history: [] })
-    });
-    const data = await res.json();
-    if (data.error) {
-        messagesDiv.innerHTML += `<div class="message ai-message" style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb;">System: ${data.error}. Please try again later.</div>`;
-    } else {
-        messagesDiv.innerHTML += `<div class="message ai-message">${data.reply}</div>`;
-    }
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-}
-
-function setupChatbot() {
-    document.getElementById('chat-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
-}

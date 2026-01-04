@@ -12,161 +12,396 @@
 
 <body>
     <header>
-        <div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Emblem_of_India.svg/200px-Emblem_of_India.svg.png"
-                alt="Emblem of India">
-            <div>
-                <h1>Government of NCT of Delhi</h1>
-                <p style="margin:0; font-size: 0.8rem;">Waterlogging Monitoring & Response System</p>
-            </div>
+        <div class="logo" onclick="location.href='index.html'">
+            <img src="logo.png" alt="URRS Logo">
+            <h1>Urban Rain Resilience System (URRS)</h1>
         </div>
         <nav>
             <ul id="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="reports.html">View Reports</a></li>
-                <li><a href="guidance.html">Citizen Guidance</a></li>
+                <li><a href="live-map.html">Live Map</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="guidance.html">Safety Guidelines</a></li>
                 <li><a href="warning.html">Rainfall Warnings</a></li>
                 <li id="auth-link"><a href="login.html">Login / Register</a></li>
             </ul>
         </nav>
     </header>
 
+
+    <!-- Landing Hero -->
+    <div class="landing-hero">
+        <h2>Resilient Delhi, Safer Monsoon.</h2>
+        <p>Join the community-led initiative to monitor, report, and resolve waterlogging issues in real-time.
+            transforming Delhi's rain response with AI.</p>
+        <div class="hero-buttons">
+            <button class="hero-btn hero-btn-red" onclick="scrollToReport()" id="report-btn-hero">
+                Report Issue
+            </button>
+            <a href="live-map.html" class="hero-btn hero-btn-white">
+                View Water Logging
+            </a>
+            <a href="navigation.html" class="hero-btn hero-btn-green">
+                Safe Navigation
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Ticker (Delhi Relevant & Problem Focused) -->
+    <div class="stats-container">
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number">165+</div>
+                <div class="stat-divider"></div>
+                <div class="stat-label">Chronic Blackspots</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">15</div>
+                <div class="stat-divider"></div>
+                <div class="stat-label">Critical Underpasses</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">11</div>
+                <div class="stat-divider"></div>
+                <div class="stat-label">Agencies Unified</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">45m</div>
+                <div class="stat-divider"></div>
+                <div class="stat-label">Avg. Pump Response</div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
-        <!-- Hero Section -->
-        <div class="card"
-            style="text-align: center; background: linear-gradient(135deg, #003366 0%, #004080 100%); color: white; border: none;">
-            <h2>Integrated Civic Reporting Platform</h2>
-            <p>Report waterlogging issues in your area and help authorities respond faster.</p>
-            <button class="btn btn-danger" onclick="scrollToReport()" id="report-btn-hero">Report Waterlogging</button>
-        </div>
 
-        <div class="grid-2">
-            <!-- Map Section -->
-            <div class="card">
-                <h3>Live Waterlogging Map</h3>
-                <p>Real-time reports and identified hotspots across Delhi.</p>
-                <div id="map"></div>
-                <div style="margin-top: 10px; display: flex; gap: 15px; font-size: 0.9rem;">
-                    <span><i style="background: red; width: 15px; height: 15px; display: inline-block;"></i>
-                        Hotspot</span>
-                    <span><i
-                            style="background: blue; width: 15px; height: 15px; display: inline-block; border-radius: 50%;"></i>
-                        Live Report</span>
+        <!-- (Reporting form moved to submit.html) -->
+
+        <!-- How it Works Section - Side by Side Boxes -->
+        <section class="landing-section">
+            <div class="section-header-line">
+                <div class="section-line"></div>
+                <span class="section-tag">EFFECTIVE SMART CITY SOLUTION</span>
+                <div class="section-line"></div>
+            </div>
+            <div class="section-title">
+                <h3>Integrated Urban Flood Response</h3>
+            </div>
+            <div class="features-grid">
+                <div class="smart-card">
+                    <div class="smart-icon-wrapper">
+                        <img src="images/step_report.png" alt="Spot">
+                    </div>
+                    <h4>Spot</h4>
+                    <p>Identify waterlogging in chronic zones like Minto Road, NH-48, or local colony lanes.</p>
+                </div>
+                <div class="smart-card">
+                    <div class="smart-icon-wrapper">
+                        <img src="images/step_track.png" alt="Snap">
+                    </div>
+                    <h4>Snap</h4>
+                    <p>Upload a photo. Our AI identifies the jurisdiction (MCD, PWD or NDMC) instantly.</p>
+                </div>
+                <div class="smart-card">
+                    <div class="smart-icon-wrapper">
+                        <img src="images/step_resolve.png" alt="Solve">
+                    </div>
+                    <h4>Solve</h4>
+                    <p>Track as agency crews dispatch suction pumps and clear the drainage blockage.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Core Features (SmartCity Style) -->
+    <div class="smart-section bg-gradient-blue">
+        <div class="container">
+            <div class="section-header-line">
+                <div class="section-line"></div>
+                <span class="section-tag">COMPREHENSIVE CIVIC SOLUTION</span>
+                <div class="section-line"></div>
+            </div>
+            <div class="section-title">
+                <h3>Our Core Features</h3>
+                <p>Robust & reliable e-governance solution for Delhi citizens.</p>
+            </div>
+
+            <div class="features-grid">
+                <!-- Card 1 -->
+                <div class="smart-card border-action">
+                    <div class="smart-icon-wrapper">
+                        <img src="./assets/features/flood-zone.png" alt="GIS Mapping">
+                    </div>
+                    <h4>GIS Hotspot Mapping</h4>
+                    <p>Identifies and maps water-logging hotspots across Delhi using advanced geospatial technology.</p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="smart-card border-accent">
+                    <div class="smart-icon-wrapper">
+                        <img src="./assets/features/yamuna-map.jpg" alt="Predictive Analytics">
+                    </div>
+                    <h4>Predictive Analytics</h4>
+                    <p>Leverages historical rainfall data & drainage info to generate actionable early response
+                        insights.</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="smart-card border-purple">
+                    <div class="smart-icon-wrapper">
+                        <img src="./assets/features/control-room.png" alt="Preparedness">
+                    </div>
+                    <h4>Ward-Level Preparedness</h4>
+                    <p>Assesses monsoon readiness at the zonal level to support proactive urban planning by authorities.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Benefits Section (Tabs) -->
+    <div class="smart-section bg-warm-tint">
+        <div class="container">
+            <div class="section-header-line">
+                <div class="section-line"></div>
+                <span class="section-tag">CITIZEN BENEFITS</span>
+                <div class="section-line"></div>
+            </div>
+            <div class="section-title">
+                <h3>Empowering Delhi's Rain Resilience</h3>
+                <p>Advanced digital infrastructure for citizens and officials to tackle monsoon challenges.</p>
+            </div>
+
+            <div class="toggle-container">
+                <div class="toggle-pill">
+                    <button class="toggle-btn active" onclick="toggleBenefits('citizen')">For Citizens</button>
+                    <button class="toggle-btn" onclick="toggleBenefits('official')">For Officials</button>
                 </div>
             </div>
 
-            <!-- Reporting Section / Details Section -->
-            <div id="side-panel">
-                <div class="card" id="report-form-container" style="display: none;">
-                    <h3>Create Waterlogging Report</h3>
-                    <form id="report-form">
-                        <div>
-                            <label>Title</label>
-                            <input type="text" id="report-title" placeholder="e.g. Heavy flooding near XYZ market"
-                                required>
-                        </div>
-                        <div>
-                            <label>Description</label>
-                            <textarea id="report-desc" rows="3" placeholder="Describe the situation..."
-                                required></textarea>
-                            <button type="button" id="btn-predict-ai" class="btn btn-primary"
-                                style="font-size: 0.7rem; margin-top: 5px; padding: 4px 8px;">✨ Suggest Authority with
-                                AI</button>
-                        </div>
-                        <div>
-                            <label>Severity</label>
-                            <select id="report-severity">
-                                <option value="Low">Low (Ankle deep)</option>
-                                <option value="Medium">Medium (Knee deep)</option>
-                                <option value="High">High (Waste deep/Car stuck)</option>
-                                <option value="Critical">Critical (Immediate danger/Evacuation needed)</option>
-                            </select>
-                        </div>
-                        <div class="grid-2" style="gap: 5px;">
-                            <div>
-                                <label>Latitude</label>
-                                <input type="text" id="report-lat" readonly required>
-                            </div>
-                            <div>
-                                <label>Longitude</label>
-                                <input type="text" id="report-lng" readonly required>
-                            </div>
-                        </div>
-                        <p style="font-size: 0.8rem; color: #666;">Location auto-captured from your device.</p>
-
-                        <div id="ai-prediction-box"
-                            style="background: #e9ecef; padding: 10px; margin-bottom: 10px; display: none; border-left: 5px solid var(--primary-color);">
-                            <strong>AI Suggested Authority:</strong> <span id="predicted-authority">Predicting...</span>
-                        </div>
-
-                        <div>
-                            <label>Authority (Manual Override if needed)</label>
-                            <select id="report-authority" required>
-                                <option value="">Select Authority</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Upload Image (Optional)</label>
-                            <input type="file" id="report-image" accept="image/*">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit Official Report</button>
-                    </form>
-                </div>
-
-                <div class="card" id="welcome-card">
-                    <h3>Citizen Portal</h3>
-                    <p>Welcome to the official monitoring system. Please login to submit reports and interact with the
-                        community.</p>
-                    <a href="login.html" class="btn btn-primary" style="text-decoration: none;">Login to Report</a>
-                </div>
-
-                <div class="card" id="active-report-details" style="display: none;">
-                    <h3 id="detail-title">Report Details</h3>
-                    <p id="detail-desc"></p>
-                    <p><strong>Severity:</strong> <span id="detail-severity"></span></p>
-                    <p><strong>Status:</strong> <span id="detail-status"></span></p>
-                    <p><strong>Assigned to:</strong> <span id="detail-authority"></span></p>
-                    <div id="detail-image-container"></div>
-                    <hr>
-                    <div id="upvote-section">
-                        <button id="upvote-btn" class="btn btn-primary">Upvote (<span
-                                id="upvote-count">0</span>)</button>
+            <!-- Citizen Benefits -->
+            <div id="benefits-citizen" class="features-grid">
+                <div class="smart-card">
+                    <div class="smart-icon-wrapper">
+                        <img src="./assets/steps/step1.png" alt="Spot Issue">
                     </div>
-                    <h4>Comments</h4>
-                    <div id="comments-list" style="margin-bottom: 10px; max-height: 200px; overflow-y: auto;"></div>
-                    <div id="comment-form-container">
-                        <textarea id="new-comment" placeholder="Add a comment..." rows="2"></textarea>
-                        <button onclick="submitComment()" class="btn btn-success btn-sm">Post</button>
+                    <h4>Spot Critical Flooding</h4>
+                    <p>Identify issues in bottlenecks like Minto Bridge, Outer Ring Road or NH-48 bottlenecks.</p>
+                </div>
+                <div class="smart-card">
+                    <div class="smart-icon-wrapper">
+                        <img src="./assets/steps/step2.png" alt="AI-Powered Escalation">
+                    </div>
+                    <h4>AI-Powered Escalation</h4>
+                    <p>Our AI identifies the exact jurisdiction (MCD/PWD) and routes to the Zonal Control Room.</p>
+                </div>
+                <div class="smart-card">
+                    <div class="smart-icon-wrapper">
+                        <img src="./assets/steps/step3.png" alt="Accountable Resolution">
+                    </div>
+                    <h4>Accountable Resolution</h4>
+                    <p>Track de-watering pump deployment and verify the completion of drain de-silting in your area.</p>
+                </div>
+            </div>
+
+            <!-- Official Benefits -->
+            <div id="benefits-official" class="features-grid" style="display: none;">
+                <div class="smart-card">
+                    <div class="smart-icon-wrapper">
+                        <img src="./assets/capabilities/heatmap.png" alt="Heatmaps">
+                    </div>
+                    <h4>Strategic Heatmaps</h4>
+                    <p>Identify which Delhi drainage sub-basins need urgent Master Plan 2041 intervention.</p>
+                </div>
+                <div class="smart-card">
+                    <div class="smart-icon-wrapper">
+                        <img src="./assets/capabilities/ai-validation.png" alt="AI Validation">
+                    </div>
+                    <h4>Priority Dispatch</h4>
+                    <p>AI detects high-impact flooding near Delhi Hospitals or ISBTs for priority response.</p>
+                </div>
+                <div class="smart-card">
+                    <div class="smart-icon-wrapper">
+                        <img src="./assets/capabilities/broadcasts.png" alt="Broadcasts">
+                    </div>
+                    <h4>Mass Public Warnings</h4>
+                    <p>Broadcast safe navigation routes and flash-flood alerts directly to the public via app/SMS.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trusted Agencies -->
+    <div class="smart-section bg-gradient-blue">
+        <div class="container">
+            <div class="section-header-line">
+                <div class="section-line"></div>
+                <span class="section-tag">TRUSTED PARTNERS</span>
+                <div class="section-line"></div>
+            </div>
+            <div class="section-title">
+                <h3>Connecting Delhi's Agencies</h3>
+                <p>Unified response from all multiple civic bodies.</p>
+            </div>
+            <!-- Logos Marquee - Infinite Scrolling -->
+            <div class="logos-marquee-wrapper">
+                <div class="logos-marquee-content">
+                    <!-- Original Set -->
+                    <div class="logo-box">
+                        <img src="./assets/logos/mcd.png" alt="MCD" class="logo-image"
+                            title="Municipal Corporation of Delhi">
+                        <div class="logo-label">MCD</div>
+                    </div>
+                    <div class="logo-box">
+                        <img src="./assets/logos/imd.png" alt="IMD" class="logo-image"
+                            title="India Meteorological Department">
+                        <div class="logo-label">IMD</div>
+                    </div>
+                    <div class="logo-box">
+                        <img src="./assets/logos/ddma.png" alt="DDMA" class="logo-image"
+                            title="Delhi Disaster Management Authority">
+                        <div class="logo-label">DDMA</div>
+                    </div>
+                    <div class="logo-box">
+                        <img src="./assets/logos/djb.png" alt="DJB" class="logo-image" title="Delhi Jal Board">
+                        <div class="logo-label">DJB</div>
+                    </div>
+                    <div class="logo-box">
+                        <img src="./assets/logos/dda.png" alt="DDA" class="logo-image"
+                            title="Delhi Development Authority">
+                        <div class="logo-label">DDA</div>
+                    </div>
+
+                    <!-- Duplicated Set for Infinite Loop -->
+                    <div class="logo-box">
+                        <img src="./assets/logos/mcd.png" alt="MCD" class="logo-image"
+                            title="Municipal Corporation of Delhi">
+                        <div class="logo-label">MCD</div>
+                    </div>
+                    <div class="logo-box">
+                        <img src="./assets/logos/imd.png" alt="IMD" class="logo-image"
+                            title="India Meteorological Department">
+                        <div class="logo-label">IMD</div>
+                    </div>
+                    <div class="logo-box">
+                        <img src="./assets/logos/ddma.png" alt="DDMA" class="logo-image"
+                            title="Delhi Disaster Management Authority">
+                        <div class="logo-label">DDMA</div>
+                    </div>
+                    <div class="logo-box">
+                        <img src="./assets/logos/djb.png" alt="DJB" class="logo-image" title="Delhi Jal Board">
+                        <div class="logo-label">DJB</div>
+                    </div>
+                    <div class="logo-box">
+                        <img src="./assets/logos/dda.png" alt="DDA" class="logo-image"
+                            title="Delhi Development Authority">
+                        <div class="logo-label">DDA</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Chatbot UI -->
-    <button id="chatbot-toggle" class="btn btn-primary"
-        style="border-radius: 50%; width: 60px; height: 60px; font-size: 1.5rem;">💬</button>
-    <div id="chatbot-window">
-        <div id="chat-header">
-            <span>AI Help Desk</span>
-            <button onclick="toggleChat()"
-                style="background: none; border: none; color: white; cursor: pointer;">✖</button>
+    <div class="container">
+        <!-- Live Map Preview (Optional) -->
+        <div class="card">
+            <h3>Live Waterlogging Snapshot</h3>
+            <p>See what's happening right now. <a href="reports.html">View Full Map</a></p>
+            <div id="map" style="height: 400px;"></div>
         </div>
-        <div id="chat-messages">
-            <div class="message ai-message">Welcome to Delhi Waterlogging Help Desk. How can I assist you today?</div>
-        </div>
-        <div id="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Type your question...">
-            <button onclick="sendMessage()" class="btn btn-primary">Send</button>
+
+        <!-- Active Report Details (Hidden) -->
+        <div class="card" id="active-report-details" style="display: none; border: 1.5px solid var(--primary-blue);">
+            <h3 id="detail-title">Report Details</h3>
+            <p id="detail-desc"></p>
+            <p><strong>Severity:</strong> <span id="detail-severity"></span></p>
+            <p><strong>Status:</strong> <span id="detail-status"></span></p>
+            <p><strong>Assigned to:</strong> <span id="detail-authority"></span></p>
+            <div id="detail-image-container"></div>
+            <hr>
+            <div id="upvote-section">
+                <button id="upvote-btn" class="btn btn-primary">Upvote (<span id="upvote-count">0</span>)</button>
+            </div>
+            <h4>Comments</h4>
+            <div id="comments-list" style="margin-bottom: 10px; max-height: 200px; overflow-y: auto;"></div>
+            <div id="comment-form-container">
+                <textarea id="new-comment" placeholder="Add a comment..." rows="2"></textarea>
+                <button onclick="submitComment()" class="btn btn-success btn-sm">Post</button>
+            </div>
         </div>
     </div>
+
 
     <footer>
         <p>&copy; 2024 Government of NCT of Delhi. All Rights Reserved.</p>
         <p>Managed by Delhi e-Governance Division.</p>
     </footer>
 
+    <script src="navbar.js"></script>
     <script src="app.js"></script>
+    <script>
+        // Toggle Logic for Benefits Section
+        function toggleBenefits(role) {
+            const btns = document.querySelectorAll('.toggle-btn');
+            const citizenView = document.getElementById('benefits-citizen');
+            const officialView = document.getElementById('benefits-official');
+
+            btns.forEach(b => b.classList.remove('active'));
+
+            if (role === 'citizen') {
+                btns[0].classList.add('active');
+                citizenView.style.display = 'flex'; // Explicitly set flex
+                officialView.style.display = 'none';
+            } else {
+                btns[1].classList.add('active');
+                citizenView.style.display = 'none';
+                officialView.style.display = 'grid'; // Explicitly set grid
+            }
+        }
+
+        // Number Counter Animation
+        const statNumbers = document.querySelectorAll('.stat-number');
+
+        const animateNumbers = () => {
+            statNumbers.forEach(counter => {
+                const targetText = counter.innerText;
+                const target = parseInt(targetText.replace(/,/g, '').replace(/\D/g, ''));
+                if (isNaN(target)) return; // Skip non-numeric like 'Delhi'
+
+                const duration = 2000; // ms
+                const stepTime = 20;
+                const steps = duration / stepTime;
+                const increment = target / steps;
+
+                let current = 0;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.innerText = targetText; // Restore original formatting
+                        clearInterval(timer);
+                    } else {
+                        counter.innerText = Math.floor(current).toLocaleString(); // Basic formatting during anim
+                    }
+                }, stepTime);
+            });
+        };
+
+        // Run animation when element is in view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateNumbers();
+                    observer.disconnect(); // Run once
+                }
+            });
+        });
+
+        const statsSection = document.querySelector('.stats-ticker');
+        if (statsSection) observer.observe(statsSection);
+
+    </script>
 </body>
 
 </html>

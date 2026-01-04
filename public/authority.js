@@ -33,6 +33,18 @@ async function loadReports() {
     const res = await fetch(url);
     const reports = await res.json();
 
+    // Calculate Stats
+    const total = reports.length;
+    const criticalPending = reports.filter(r => r.status !== 'Resolved' && r.severity === 'Critical').length;
+    const inProgress = reports.filter(r => r.status === 'In Progress').length;
+    const resolved = reports.filter(r => r.status === 'Resolved').length;
+
+    // Update Dashboard UI
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-pending').textContent = criticalPending;
+    document.getElementById('stat-process').textContent = inProgress;
+    document.getElementById('stat-resolved').textContent = resolved;
+
     const tbody = document.getElementById('reports-tbody');
     tbody.innerHTML = reports.map(r => `
         <tr style="border-bottom: 1px solid #ddd;">
@@ -49,47 +61,85 @@ async function loadReports() {
             <td style="padding: 10px;">${r.authority_name}</td>
             <td style="padding: 10px;">${r.status}</td>
             <td style="padding: 10px;">
-                ${r.status !== 'Resolved' ? `<button onclick="openResolveModal(${r.id})" class="btn btn-success btn-sm">Resolve</button>` : 'COMPLETED'}
+                ${r.status !== 'Resolved' ? `<button onclick="resolveReport(${r.id})" class="btn btn-success btn-sm">Resolve</button>` : 'COMPLETED'}
             </td>
         </tr>
     `).join('');
 }
 
-function openResolveModal(id) {
-    document.getElementById('resolve-report-id').value = id;
-    document.getElementById('resolve-modal').style.display = 'flex';
+// Resolution Modal Logic
+let currentReportId = null;
+
+function resolveReport(id) {
+    currentReportId = id;
+    openResolveModal();
 }
 
-function closeModal() {
-    document.getElementById('resolve-modal').style.display = 'none';
+function openResolveModal() {
+    const modal = document.getElementById('resolve-modal');
+    modal.style.display = 'flex';
+    // Reset fields
+    document.getElementById('resolve-note').value = '';
+    document.getElementById('resolve-proof').value = '';
+    document.getElementById('resolve-filename').textContent = '';
+}
+
+function closeResolveModal() {
+    const modal = document.getElementById('resolve-modal');
+    modal.style.display = 'none';
+    currentReportId = null;
+}
+
+async function submitResolution() {
+    if (!currentReportId) return;
+
+    const note = document.getElementById('resolve-note').value;
+    if (!note) {
+        if (window.showToast) showToast("Please provide a resolution note.", "error");
+        else alert("Resolution note is required");
+        return;
+    }
+
+    const proofImage = document.getElementById('resolve-proof').files[0];
+    const formData = new FormData();
+    formData.append('note', note);
+    if (proofImage) {
+        formData.append('proof_image', proofImage);
+    }
+
+    // Show loading state
+    const submitBtn = document.querySelector('#resolve-modal .btn-success');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Processing...';
+    submitBtn.disabled = true;
+
+    try {
+        const res = await fetch(`/api/reports/${currentReportId}/resolve`, {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: formData
+        });
+
+        if (res.ok) {
+            closeResolveModal();
+            loadReports();
+            if (window.showToast) {
+                showToast("✅ Case Resolved Successfully!", "success", 8000);
+            }
+        } else {
+            const data = await res.json();
+            if (window.showToast) showToast(data.error || "Failed to resolve report", "error");
+        }
+    } catch (err) {
+        console.error(err);
+        if (window.showToast) showToast("Network error occurred", "error");
+    } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    }
 }
 
 function logout() {
     localStorage.clear();
     window.location.href = 'index.html';
 }
-
-document.getElementById('resolve-form').onsubmit = async (e) => {
-    e.preventDefault();
-    const id = document.getElementById('resolve-report-id').value;
-    const note = document.getElementById('resolve-note').value;
-    const proofImage = document.getElementById('resolve-proof-image').files[0];
-
-    const formData = new FormData();
-    formData.append('note', note);
-    formData.append('proof_image', proofImage);
-
-    const res = await fetch(`/api/reports/${id}/resolve`, {
-        method: 'PUT',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formData
-    });
-
-    if (res.ok) {
-        alert("Report marked as Resolved successfully.");
-        closeModal();
-        loadReports();
-    } else {
-        alert("Failed to resolve report.");
-    }
-};

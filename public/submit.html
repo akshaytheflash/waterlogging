@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Report - Urban Rain Resilience System (URRS)</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        .submit-container {
+            padding: 4rem 0;
+            background-color: var(--bg-main);
+            min-height: calc(100vh - 200px);
+        }
+
+        #map-submit {
+            height: 350px;
+            border-radius: var(--radius-lg);
+            border: 1.5px solid var(--border-color);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .step.active {
+            color: var(--primary-blue);
+        }
+
+        .step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .step.active .step-num {
+            background: var(--primary-blue);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo" onclick="location.href='index.html'">
+            <img src="logo.png" alt="URRS Logo">
+            <h1>Urban Rain Resilience System (URRS)</h1>
+        </div>
+        <nav>
+            <ul id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="live-map.html">Live Map</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="guidance.html">Safety Guidelines</a></li>
+                <li><a href="warning.html">Rainfall Warnings</a></li>
+                <li id="auth-link"><a href="login.html">Login / Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="submit-container">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <h1 style="color: var(--primary-blue); font-size: 2.5rem;">Report Waterlogging</h1>
+                <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;">Your report helps civic
+                    agencies prioritize response teams. Select the location and provide incident details.</p>
+            </div>
+
+            <div class="step-indicator">
+                <div class="step active">
+                    <div class="step-num">1</div>
+                    <span>Mark Location</span>
+                </div>
+                <div class="step active">
+                    <div class="step-num">2</div>
+                    <span>Incident Details</span>
+                </div>
+                <div class="step active">
+                    <div class="step-num">3</div>
+                    <span>Submit</span>
+                </div>
+            </div>
+
+            <div class="card"
+                style="max-width: 900px; margin: 0 auto; border: 1.5px solid var(--primary-blue); box-shadow: var(--shadow-xl); padding: var(--spacing-xl);">
+                <form id="report-form">
+                    <div class="grid-2" style="gap: 2rem;">
+                        <!-- Left side: Map and Location -->
+                        <div>
+                            <label style="font-weight: 700; margin-bottom: 12px; display: block;">1. Adjust Location
+                                (Drag marker)</label>
+                            <div id="map-submit"></div>
+
+                            <div
+                                style="background: #f8f9fa; padding: 12px; border-radius: var(--radius-md); margin-top: 10px; border: 1px solid var(--border-color);">
+                                <label
+                                    style="font-size: 0.85rem; color: var(--text-primary); font-weight: 700; margin-bottom: 4px; display: block;">📍
+                                    Detected Location</label>
+                                <div id="address-display"
+                                    style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.4; min-height: 20px;">
+                                    Fetching address...</div>
+                                <input type="hidden" id="report-lat" name="lat">
+                                <input type="hidden" id="report-lng" name="lng">
+                            </div>
+                        </div>
+
+                        <!-- Right side: Details -->
+                        <div>
+                            <div style="margin-bottom: var(--spacing-lg);">
+                                <label style="font-weight: 700; margin-bottom: 8px; display: block;">Report
+                                    Title</label>
+                                <input type="text" id="report-title"
+                                    placeholder="e.g., Heavy flooding near Subhash Nagar" required
+                                    style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                            </div>
+
+                            <div style="margin-bottom: var(--spacing-lg);">
+                                <label style="font-weight: 700; margin-bottom: 8px; display: block;">Description</label>
+                                <textarea id="report-desc" rows="4"
+                                    placeholder="Mention depth, if roads are blocked, or any danger..." required
+                                    style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-family: inherit; resize: vertical;"></textarea>
+                            </div>
+
+                            <div style="margin-bottom: var(--spacing-lg);">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <label style="font-weight: 700; margin: 0;">Assigned Authority</label>
+                                    <button type="button" id="btn-predict-ai"
+                                        style="background: none; border: none; color: var(--primary-blue); font-size: 0.8rem; font-weight: 700; cursor: pointer; padding: 0; text-decoration: underline;">Suggest
+                                        with AI</button>
+                                </div>
+                                <select id="report-authority" required
+                                    style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                                    <option value="">Select Responsible Agency</option>
+                                </select>
+                            </div>
+
+                            <div id="ai-prediction-box"
+                                style="background: var(--blue-50); padding: 1rem; margin-bottom: var(--spacing-lg); display: none; border: 1.2px solid var(--primary-blue); border-radius: var(--radius-md); font-size: 0.9rem;">
+                                <strong style="color: var(--primary-blue);">System Recommendation:</strong> <span
+                                    id="predicted-authority"
+                                    style="color: var(--text-primary); font-weight: 600;">Predicting...</span>
+                            </div>
+
+                            <div style="margin-bottom: var(--spacing-lg);">
+                                <label style="font-weight: 700; margin-bottom: 8px; display: block;">Severity
+                                    Level</label>
+                                <select id="report-severity"
+                                    style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                                    <option value="Low">Low (Ankle deep)</option>
+                                    <option value="Medium">Medium (Knee deep)</option>
+                                    <option value="High">High (Waist deep / Vehicles stuck)</option>
+                                    <option value="Critical">Critical (Immediate Danger)</option>
+                                </select>
+                            </div>
+
+                            <div style="margin-bottom: var(--spacing-xl);">
+                                <label style="font-weight: 700; margin-bottom: 8px; display: block;">Photo Evidence
+                                    (Optional)</label>
+                                <input type="file" id="report-image" accept="image/*"
+                                    style="width: 100%; padding: 8px; border: 1px dashed var(--border-color); border-radius: var(--radius-md); background: #fafafa;">
+                            </div>
+
+                            <button type="submit" class="btn btn-danger"
+                                style="width: 100%; padding: 1.2rem; font-size: 1.2rem; font-weight: 800; text-transform: uppercase;">Submit
+                                Official Report</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Urban Rain Resilience System (URRS). All Rights Reserved.</p>
+    </footer>
+
+    <script src="navbar.js"></script>
+    <script src="submit.js"></script>
+</body>
+
+</html>
