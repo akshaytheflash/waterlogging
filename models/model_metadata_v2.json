@@ -1,0 +1,68 @@
+{
+  "model_version": "v2.0.0",
+  "trained_at": "2026-01-11T00:42:11.778579",
+  "metrics": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0
+  },
+  "feature_names": [
+    "rainfall_24h",
+    "rainfall_squared",
+    "rainfall_log",
+    "rainfall_intensity_num",
+    "lat",
+    "lng",
+    "elevation_proxy",
+    "min_dist_to_risk_zone_km",
+    "day_of_year",
+    "month",
+    "is_monsoon",
+    "day_sin",
+    "day_cos",
+    "month_sin",
+    "month_cos"
+  ],
+  "feature_importance": [
+    {
+      "feature": "rainfall_24h",
+      "importance": 1.0
+    },
+    {
+      "feature": "rainfall_squared",
+      "importance": 0.0
+    },
+    {
+      "feature": "rainfall_log",
+      "importance": 0.0
+    },
+    {
+      "feature": "rainfall_intensity_num",
+      "importance": 0.0
+    },
+    {
+      "feature": "lat",
+      "importance": 0.0
+    },
+    {
+      "feature": "lng",
+      "importance": 0.0
+    },
+    {
+      "feature": "elevation_proxy",
+      "importance": 0.0
+    },
+    {
+      "feature": "min_dist_to_risk_zone_km",
+      "importance": 0.0
+    },
+    {
+      "feature": "day_of_year",
+      "importance": 0.0
+    },
+    {
+      "feature": "month",
+      "importance": 0.0
+    }
+  ]
+}

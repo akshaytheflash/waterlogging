@@ -68,6 +68,11 @@ function setupNavbar() {
 
         if (linkMap.map) navLinks.appendChild(linkMap.map);
 
+        // Add Historical Predictions link (available to all users)
+        const predictionsLi = document.createElement('li');
+        predictionsLi.innerHTML = `<a href="predictions.html">Predictions</a>`;
+        navLinks.appendChild(predictionsLi);
+
         // Hide public reports list for authorities (they have dashboard)
         if (linkMap.reports && (!currentUser || currentUser.role !== 'authority')) {
             navLinks.appendChild(linkMap.reports);

@@ -1,0 +1,28 @@
+
+MANUAL DOWNLOAD REQUIRED FOR SOME DATASETS
+==========================================
+
+1. IMD Rainfall Data (1901-2021)
+   Source: https://data.gov.in/
+   Search for: "IMD Rainfall Data Delhi"
+   Format: CSV
+   Save as: imd_delhi_rainfall_1901_2021.csv
+
+2. Delhi Traffic Police Waterlogging Spots
+   Source: News reports and official statements
+   Manual compilation required
+   Save as: delhi_traffic_police_spots.csv
+   
+3. DDMA Flood Reports
+   Source: https://ddma.delhi.gov.in/ddma/floods
+   Manual extraction from reports
+   Save as: ddma_flood_reports.csv
+
+4. Additional Zenodo Datasets
+   Source: https://zenodo.org/communities/hydrosense
+   Search for: "Delhi" or "India Flood"
+   Download relevant datasets
+
+Place all manually downloaded files in:
+C:\Users\aksha\Downloads\final-project\waterlogging\scripts\..\data\historical
+    

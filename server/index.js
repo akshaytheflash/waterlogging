@@ -319,6 +319,192 @@ app.get('/api/rainfall-warnings', (req, res) => {
     res.json(warnings);
 });
 
+// --- HISTORICAL PREDICTION ROUTES ---
+
+// Get predicted hotspots for a specific date
+app.get('/api/predictions/date/:date', async (req, res) => {
+    const { date } = req.params;
+
+    try {
+        const result = await db.query(
+            'SELECT * FROM predicted_hotspots WHERE prediction_date = $1 ORDER BY confidence_score DESC',
+            [date]
+        );
+
+        const hotspots = result.rows.map(row => ({
+            id: row.id,
+            name: row.name,
+            lat: parseFloat(row.lat),
+            lng: parseFloat(row.lng),
+            severity: row.severity,
+            confidence: parseFloat(row.confidence_score),
+            predicted_rainfall: parseFloat(row.predicted_rainfall_mm),
+            risk_factors: row.risk_factors ? JSON.parse(row.risk_factors) : {},
+            radius_meters: row.radius_meters
+        }));
+
+        res.json({
+            date: date,
+            hotspots: hotspots,
+            model_version: hotspots.length > 0 ? result.rows[0].model_version : null,
+            total_count: hotspots.length
+        });
+    } catch (err) {
+        console.error('Prediction fetch error:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+// Get historical incidents for a date range
+app.get('/api/historical/incidents', async (req, res) => {
+    const { start_date, end_date, severity } = req.query;
+
+    let query = 'SELECT * FROM historical_incidents WHERE 1=1';
+    let params = [];
+
+    if (start_date) {
+        params.push(start_date);
+        query += ` AND incident_date >= $${params.length}`;
+    }
+
+    if (end_date) {
+        params.push(end_date);
+        query += ` AND incident_date <= $${params.length}`;
+    }
+
+    if (severity) {
+        params.push(severity);
+        query += ` AND severity = $${params.length}`;
+    }
+
+    query += ' ORDER BY incident_date DESC LIMIT 100';
+
+    try {
+        const result = await db.query(query, params);
+        res.json({
+            incidents: result.rows,
+            total_count: result.rows.length
+        });
+    } catch (err) {
+        console.error('Historical incidents fetch error:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+// Get rainfall data for a specific date
+app.get('/api/rainfall/date/:date', async (req, res) => {
+    const { date } = req.params;
+
+    try {
+        const result = await db.query(
+            'SELECT * FROM historical_rainfall WHERE record_date = $1',
+            [date]
+        );
+
+        const stations = result.rows.map(row => ({
+            name: row.station_name,
+            lat: parseFloat(row.lat),
+            lng: parseFloat(row.lng),
+            rainfall_24h: parseFloat(row.rainfall_24h),
+            rainfall_1h: row.rainfall_1h ? parseFloat(row.rainfall_1h) : null,
+            rainfall_3h: row.rainfall_3h ? parseFloat(row.rainfall_3h) : null,
+            rainfall_6h: row.rainfall_6h ? parseFloat(row.rainfall_6h) : null,
+            temperature: row.temperature_c ? parseFloat(row.temperature_c) : null,
+            humidity: row.humidity_percent
+        }));
+
+        res.json({
+            date: date,
+            stations: stations,
+            total_stations: stations.length
+        });
+    } catch (err) {
+        console.error('Rainfall data fetch error:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+// Get model performance metrics
+app.get('/api/model/metrics', async (req, res) => {
+    try {
+        const result = await db.query(
+            'SELECT * FROM model_metadata ORDER BY training_date DESC LIMIT 1'
+        );
+
+        if (result.rows.length === 0) {
+            return res.json({
+                current_version: 'v2.0.0',
+                message: 'No model metadata available yet'
+            });
+        }
+
+        const metadata = result.rows[0];
+
+        res.json({
+            current_version: metadata.model_version,
+            accuracy: parseFloat(metadata.accuracy),
+            precision: parseFloat(metadata.precision_score),
+            recall: parseFloat(metadata.recall_score),
+            f1_score: parseFloat(metadata.f1_score),
+            training_samples: metadata.training_samples,
+            last_trained: metadata.training_date,
+            feature_importance: metadata.feature_importance ? JSON.parse(metadata.feature_importance) : null,
+            data_sources: metadata.data_sources ? JSON.parse(metadata.data_sources) : null
+        });
+    } catch (err) {
+        console.error('Model metrics fetch error:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+// Trigger prediction for a specific date (admin only)
+app.post('/api/predictions/generate', authenticateToken, async (req, res) => {
+    if (req.user.role !== 'authority') {
+        return res.status(403).json({ error: 'Only authorities can trigger predictions' });
+    }
+
+    const { date } = req.body;
+
+    if (!date) {
+        return res.status(400).json({ error: 'Date is required' });
+    }
+
+    // In production, this would trigger a background job
+    // For now, we'll just return a success message
+    res.json({
+        message: 'Prediction generation triggered',
+        date: date,
+        status: 'pending',
+        note: 'Run: python scripts/predict_for_date.py ' + date
+    });
+});
+
+// Get prediction statistics
+app.get('/api/predictions/stats', async (req, res) => {
+    try {
+        const totalPredictions = await db.query(
+            'SELECT COUNT(DISTINCT prediction_date) as count FROM predicted_hotspots'
+        );
+
+        const severityBreakdown = await db.query(
+            'SELECT severity, COUNT(*) as count FROM predicted_hotspots GROUP BY severity'
+        );
+
+        const recentPredictions = await db.query(
+            'SELECT prediction_date, COUNT(*) as hotspot_count FROM predicted_hotspots GROUP BY prediction_date ORDER BY prediction_date DESC LIMIT 10'
+        );
+
+        res.json({
+            total_prediction_dates: parseInt(totalPredictions.rows[0].count),
+            severity_breakdown: severityBreakdown.rows,
+            recent_predictions: recentPredictions.rows
+        });
+    } catch (err) {
+        console.error('Prediction stats error:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
 // Export for Vercel
 module.exports = app;
 

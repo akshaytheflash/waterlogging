@@ -1,0 +1,16 @@
+date,location,lat,lng,severity,depth_cm,duration_h,rainfall_mm,source,affected_area_sqm
+2023-07-08,Minto Bridge,28.633,77.2285,Critical,120,6,153.7,Historical_Records,12000
+2023-07-08,ITO Crossing,28.6304,77.2425,Critical,90,5,153.7,Historical_Records,9000
+2023-07-08,Dhaula Kuan,28.591,77.161,High,75,4,153.7,Historical_Records,7500
+2022-08-19,Kashmere Gate,28.6675,77.2282,High,85,4,74.6,Historical_Records,8500
+2022-08-19,Najafgarh,28.6139,76.983,Critical,110,7,74.6,Historical_Records,11000
+2021-09-01,Lajpat Nagar,28.5677,77.2432,Medium,45,3,112.2,Historical_Records,4500
+2021-09-01,Rohini Sector 18,28.74,77.13,Medium,50,3,112.2,Historical_Records,5000
+2020-09-02,Minto Bridge,28.633,77.2285,Critical,130,8,117.0,Historical_Records,13000
+2020-09-02,Pul Prahladpur,28.5,77.28,High,80,5,117.0,Historical_Records,8000
+2019-08-19,ITO Crossing,28.6304,77.2425,High,70,4,63.2,Historical_Records,7000
+2019-08-19,Azadpur,28.7041,77.175,Medium,55,3,63.2,Historical_Records,5500
+2018-07-15,Minto Bridge,28.633,77.2285,Critical,115,6,95.4,Historical_Records,11500
+2017-08-10,Dhaula Kuan,28.591,77.161,High,82,5,88.6,Historical_Records,8200
+2016-09-05,Najafgarh,28.6139,76.983,Critical,125,7,102.3,Historical_Records,12500
+2015-08-28,ITO Crossing,28.6304,77.2425,High,78,4,71.8,Historical_Records,7800

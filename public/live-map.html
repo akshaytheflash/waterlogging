@@ -239,16 +239,18 @@
                         <span class="stat-mini-label">Active Reports</span>
                     </div>
                     <div class="stat-mini">
+                        <span class="stat-mini-number">0</span>
+                        <span class="stat-mini-label">AI Hotspots</span>
+                    </div>
+                </div>
+                <div class="stats-row" style="margin-top: -1rem; margin-bottom: 1.5rem;">
+                    <div class="stat-mini">
                         <span class="stat-mini-number">5</span>
                         <span class="stat-mini-label">Severe</span>
                     </div>
                     <div class="stat-mini">
                         <span class="stat-mini-number">4</span>
-                        <span class="stat-mini-label">Moderate</span>
-                    </div>
-                    <div class="stat-mini">
-                        <span class="stat-mini-number">3</span>
-                        <span class="stat-mini-label">Low</span>
+                        <span class="stat-mini-label">Low/Mod</span>
                     </div>
                 </div>
 
@@ -318,7 +320,7 @@
                 const hotspots = await hotspotsRes.json();
 
                 renderMapData(reports, hotspots);
-                updateSidebarStats(reports);
+                updateSidebarStats(reports, hotspots);
             } catch (err) {
                 console.error("Failed to load live data:", err);
             }
@@ -349,9 +351,9 @@
                     dashArray: '5, 5',
                     fillColor: '#9333ea',
                     fillOpacity: 0.15,
-                    radius: 500
+                    radius: h.radius || 300
                 });
-                circle.bindPopup(`<b>Historical Hotspot</b><br>Historical waterlogging at this location.`);
+                circle.bindPopup(`<b>${h.name}</b><br>${h.description || 'Verified hotspot location.'}<br><small>Source: ${h.source || 'Historical'}</small>`);
 
                 // Add to a separate array for toggling
                 hotspotLayers.push(circle);
@@ -395,16 +397,19 @@
             }
         }
 
-        function updateSidebarStats(data) {
-            const total = data.length;
-            const severe = data.filter(r => ['Critical', 'High'].includes(r.severity)).length;
-            const moderate = data.filter(r => r.severity === 'Medium').length;
-            const low = data.filter(r => ['Low', 'Minor'].includes(r.severity)).length;
+        function updateSidebarStats(reports, hotspots) {
+            const total = reports.length;
+            const severe = reports.filter(r => ['Critical', 'High'].includes(r.severity)).length;
+            const lowMod = reports.filter(r => ['Medium', 'Low', 'Minor'].includes(r.severity)).length;
+            const hotspotCount = hotspots.length;
 
-            document.querySelectorAll('.stat-mini-number')[0].textContent = total;
-            document.querySelectorAll('.stat-mini-number')[1].textContent = severe;
-            document.querySelectorAll('.stat-mini-number')[2].textContent = moderate;
-            document.querySelectorAll('.stat-mini-number')[3].textContent = low;
+            const stats = document.querySelectorAll('.stat-mini-number');
+            if (stats.length >= 4) {
+                stats[0].textContent = total;
+                stats[1].textContent = hotspotCount; // New AI Hotspots slot
+                stats[2].textContent = severe;
+                stats[3].textContent = lowMod;
+            }
         }
 
         // Filter function
